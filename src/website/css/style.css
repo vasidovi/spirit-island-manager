@@ -13,3 +13,22 @@
     position: relative;
     display : inline-block;
 }
+
+.exhausted-card{
+    background-color: black;
+}
+
+.exhausted-card > img{
+    opacity: 0.4;
+}
+
+.selected-card > img{
+    border: 4px solid limegreen;
+    border-radius : 10px;
+}
+
+#cardImagesSection{
+    display: grid;
+    grid-template-rows: auto, auto;
+    grid-gap: 10px;
+}

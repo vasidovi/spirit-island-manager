@@ -27,11 +27,22 @@ function createList(id, cards) {
                 addImgs(value);
             }));
     });
+    $("#exhaustSelected").on("click", function (event) {
+        $(".img-container").filter(".selected-card").addClass("exhausted-card");
+        deselectAll(event);
+    });
+    $("#readySelected").on("click", function () {
+        $(".img-container").filter(".selected-card").removeClass("exhausted-card");
+    });
+    $("#readyAll").on("click", function () {
+        $(".img-container").removeClass("exhausted-card");
+    });
+    $("#deselectAll").on("click", deselectAll)
 };
 
 function addImgs(card) {
 
-    const cardContainer = $("<div />").addClass("img-container").attr("active", true);
+    const cardContainer = $("<div />").addClass("img-container").attr("selected", false);
     $("#cardImages").append(cardContainer);
 
     const width = 140;
@@ -43,36 +54,28 @@ function addImgs(card) {
     });
     cardContainer.append(img);
 
-
-    // img.on('click', deactivateCard);
     cardContainer.on('click', changeCardState);
 };
 
 function changeCardState(event) {
 
-    let isActive = ($(this).attr("active") === 'true');
-
-    if (isActive) {
-        deactivateCard(event, $(this));
-        $(this).attr("active", false);
+    let isSelected = $(this).attr("selected");
+    if (isSelected) {
+        deselectCard(event, $(this));
+        $(this).attr("selected", false);
     } else {
-        activateCard(event, $(this));
-        $(this).attr("active", true);
+        selectCard(event, $(this));
+        $(this).attr("selected", true);
     }
 }
 
-function deactivateCard(event, cardContainer) {
+function selectCard(event, cardContainer) {
 
     event.preventDefault();
     event.stopPropagation();
 
-    cardContainer.find("img").css({
-        "opacity": "0.4"
-    });
+    cardContainer.addClass("selected-card");
 
-    cardContainer.css({
-        "background-color": "black",
-    });
 
     const removeButton = $("<div />").addClass("remove-card-icon-container");
     removeButton.append($("<i class=\"far fa-times-circle\"></i>"));
@@ -87,18 +90,16 @@ function removeCard(event) {
     $(this).parent().remove();
 }
 
-function activateCard(event, cardContainer) {
+function deselectCard(event, cardContainer) {
 
     event.preventDefault();
-
-    cardContainer.css({
-        "background-color": "initial"
-    });
-
-    cardContainer.find("img").css({
-        "opacity": "1"
-    });
-
+    cardContainer.removeClass("selected-card");
     cardContainer.find("div").remove();
+}
+
+function deselectAll(event) {
+    $(".img-container").each(function () {
+        deselectCard(event, $(this))
+    });
 
 }
