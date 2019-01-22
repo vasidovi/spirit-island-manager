@@ -32,7 +32,7 @@ function createList(id, cards) {
 function addImgs(card) {
     const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
     const width = 140;
-    const src = "imgs/powers/" + name;
+    const src = "images/powers/" + name;
     $("#cardImages").append($("<img>").attr({
         src,
         width
