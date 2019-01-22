@@ -30,12 +30,75 @@ function createList(id, cards) {
 };
 
 function addImgs(card) {
-    const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
+
+    const cardContainer = $("<div />").addClass("img-container").attr("active", true);
+    $("#cardImages").append(cardContainer);
+
     const width = 140;
+    const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
     const src = "../../images/powers/" + name;
-    $("#cardImages").append($("<img>").attr({
+    const img = $("<img>").attr({
         src,
         width
-    }));
+    });
+    cardContainer.append(img);
 
+
+    // img.on('click', deactivateCard);
+    cardContainer.on('click', changeCardState);
 };
+
+function changeCardState(event) {
+
+    let isActive = ($(this).attr("active") === 'true');
+
+    if (isActive) {
+        deactivateCard(event, $(this));
+        $(this).attr("active", false);
+    } else {
+        activateCard(event, $(this));
+        $(this).attr("active", true);
+    }
+}
+
+function deactivateCard(event, cardContainer) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    cardContainer.find("img").css({
+        "opacity": "0.4"
+    });
+
+    cardContainer.css({
+        "background-color": "black",
+    });
+
+    const removeButton = $("<div />").addClass("remove-card-icon-container");
+    removeButton.append($("<i class=\"far fa-times-circle\"></i>"));
+
+    cardContainer.append(removeButton);
+
+    removeButton.on('click', removeCard);
+}
+
+function removeCard(event) {
+    event.stopPropagation();
+    $(this).parent().remove();
+}
+
+function activateCard(event, cardContainer) {
+
+    event.preventDefault();
+
+    cardContainer.css({
+        "background-color": "initial"
+    });
+
+    cardContainer.find("img").css({
+        "opacity": "1"
+    });
+
+    cardContainer.find("div").remove();
+
+}

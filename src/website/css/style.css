@@ -1,0 +1,15 @@
+.remove-card-icon-container{
+    color: white;
+    font-size : 20px;
+    width : 20px; 
+    height:20px;
+    position: absolute;
+    border-radius : 5px;
+     top: 5%;
+     left: 75%;  
+}
+
+.img-container{
+    position: relative;
+    display : inline-block;
+}
