@@ -19,47 +19,68 @@ const majorCards = powerCards.filter(card => card.type === data.powerDeckType.Ma
 const minorCards = powerCards.filter(card => card.type === data.powerDeckType.Minor);
 const uniqueCards = powerCards.filter(card => Object.values(data.unique).includes(card.type));
 
-exports.data = {
-  majorCards,
-  minorCards,
-  uniqueCards
+const cardData = {
+  major: majorCards,
+  minor: minorCards,
+  unique: uniqueCards
 }
+exports.cards = cardData
 
 exports.getCards = async function (type) {
   return await storage.getItem(type);
 }
 
-function reshuffleDeck(type){
-
+function reshuffleDeck(cards) {
+  cards
+  // not needed yet
+  // .filter(c => c.discard)
+  .forEach(card => {
+    card.deck = true;
+    card.discard = false
+  })
 }
-exports.draw = async function (type, count) {
-  const allCards = (await storage.getItem(type));
-  let deckCards = allCards.filter(c => c.deck);
-  
-  if (deckCards.length < count) {
-    reshuffleDeck(type)
-   deckCards = allCards.filter(c => c.deck);
 
-   if (deckCards.length < count) {
-     count = deckCards.length;
-   }
-  }
-  // generate :count indices of deck cards 
-  var randomIndices = []
-  while (randomIndices.length < count) {
-    const i = getRandomInt(0, deckCards.length - 1);
-    if (randomIndices.indexOf(i) === -1) randomIndices.push(i);
-  }
-
-  // take cards out of deck and into the response
-  randomIndices.forEach(i => {
-    console.log(allCards[deckCards[i].id])
-    allCards[deckCards[i].id].deck = false;
+function drawCards(deck, indices) {
+  indices.forEach(i => {
+    deck[i].deck = false;
   });
+  return deck.filter((_, i) => indices.includes(i))
+}
+
+function getRandomIndices(deck, count) {
+  var indices = []
+  while (indices.length < count) {
+    const i = getRandomInt(0, deck.length - 1);
+    if (indices.indexOf(i) === -1) indices.push(i);
+  }
+  return indices;
+}
+
+exports.draw = async function (type, count) {
+  const allCards = await storage.getItem(type);
+  let deck = allCards.filter(c => c.deck);
+
+  // Need to make sure there are enough cards to draw
+  if (deck.length < count) {
+    reshuffleDeck(allCards)
+    deck = allCards.filter(c => c.deck);
+
+    if (deck.length < count) {
+      count = deck.length;
+    }
+  }
+
+  var randomIndices = getRandomIndices(deck, count)
+
+  const cards = drawCards(deck, randomIndices)
 
   await storage.setItem(type, allCards);
-
-  return deckCards.filter((_, i) => randomIndices.includes(i)).map(e => e.id);
+  return cards.map(e => {
+    return {
+      id: e.id,
+      name: cardData[type][e.id].name
+    }
+  });
 }
 
 function getRandomInt(min, max) {
@@ -82,6 +103,7 @@ exports.initialize = async function () {
       }
     });
     i = 0;
+
     const minors = minorCards.map(e => {
       return {
         id: i++,
