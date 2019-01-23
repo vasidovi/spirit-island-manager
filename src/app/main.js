@@ -6,7 +6,8 @@ const app = express()
 const port = 3000
 
 app.use(bodyParser.json())
-app.use(express.static('src/website'))
+app.use('/', express.static('src/website'))
+app.use('/images', express.static('images'))
 
 
 app.get('/cards/:type', async (req, res) => {

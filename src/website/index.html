@@ -2,18 +2,29 @@
 <html>
 
 <head>
-    <!-- <style>#cardImages{
-         justify-content: space-between
-    } </style> -->
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous">
+
+
 
 </head>
 
 <body>
 
     <div>
-        <div id="cardImages">
+        <div id="cardImagesSection">
+        
+        <div id="cardControls">
+                <button type="button" class="btn btn-outline-warning" id="exhaustSelected">Exhaust Selected</button>
+                <button type="button" class="btn btn-outline-success" id="readySelected">Ready Selected</button>
+                <button type="button" class="btn btn-success" id="readyAll">Ready All</button>
+                <button type="button" class="btn btn-secondary" id="deselectAll">Deselect All</button>
+        </div>
+        <div id="cardImages"></div>
         </div>
         <div class=" container row">
             <ul class="col-sm" id="majorCards"></ul>

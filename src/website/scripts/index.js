@@ -27,15 +27,79 @@ function createList(id, cards) {
                 addImgs(value);
             }));
     });
+    $("#exhaustSelected").on("click", function (event) {
+        $(".img-container").filter(".selected-card").addClass("exhausted-card");
+        deselectAll(event);
+    });
+    $("#readySelected").on("click", function () {
+        $(".img-container").filter(".selected-card").removeClass("exhausted-card");
+    });
+    $("#readyAll").on("click", function () {
+        $(".img-container").removeClass("exhausted-card");
+    });
+    $("#deselectAll").on("click", deselectAll)
 };
 
 function addImgs(card) {
-    const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
+
+    const cardContainer = $("<div />").addClass("img-container").attr("selected", false);
+    $("#cardImages").append(cardContainer);
+
     const width = 140;
-    const src = "images/powers/" + name;
-    $("#cardImages").append($("<img>").attr({
+    const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
+    const src = "../../images/powers/" + name;
+    const img = $("<img>").attr({
         src,
         width
-    }));
+    });
+    cardContainer.append(img);
 
+    cardContainer.on('click', changeCardState);
 };
+
+function changeCardState(event) {
+
+    let isSelected = $(this).attr("selected");
+    if (isSelected) {
+        deselectCard(event, $(this));
+        $(this).attr("selected", false);
+    } else {
+        selectCard(event, $(this));
+        $(this).attr("selected", true);
+    }
+}
+
+function selectCard(event, cardContainer) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    cardContainer.addClass("selected-card");
+
+
+    const removeButton = $("<div />").addClass("remove-card-icon-container");
+    removeButton.append($("<i class=\"far fa-times-circle\"></i>"));
+
+    cardContainer.append(removeButton);
+
+    removeButton.on('click', removeCard);
+}
+
+function removeCard(event) {
+    event.stopPropagation();
+    $(this).parent().remove();
+}
+
+function deselectCard(event, cardContainer) {
+
+    event.preventDefault();
+    cardContainer.removeClass("selected-card");
+    cardContainer.find("div").remove();
+}
+
+function deselectAll(event) {
+    $(".img-container").each(function () {
+        deselectCard(event, $(this))
+    });
+
+}
