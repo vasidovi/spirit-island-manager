@@ -15,18 +15,25 @@ app.get('/cards/:type', async (req, res) => {
   res.send(JSON.stringify(cards))
 })
 
-app.post('/cards/draw/:type/:count', async (req, res) => {
+app.post('/cards/draw/:typeKey/:count', async (req, res) => {
   const count = parseInt(req.params.count);
-  const cards = await game.draw(req.params.type, count);
+  const cards = await game.draw(req.params.typeKey, count);
   res.send(JSON.stringify(cards))
+})
+
+app.post('/cards/discard', async (req, res) => {
+  await game.discard(req.body);
+  res.sendStatus(204)
+})
+
+app.post('/reset', async (req, res) => {
+  await game.reset();
+  res.sendStatus(204)
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 ;
 (async () => {
-  //you must first call storage.init
   await game.initialize();
-  // await storage.setItem('name', 'yourname')
-  // console.log(await storage.getItem('name')); // yourname
 })();
