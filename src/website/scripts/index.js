@@ -1,7 +1,15 @@
 // powerCards.forEach( function(index, value){...});
+
 const powerCards = PowerCards.filter(card => card.set === ProductSet.Basegame);
 
-powerCards.sort(function (a, b) {
+const majorCards = powerCards.filter(card => card.type === PowerDeckType.Major);
+const minorCards = powerCards.filter(card => card.type === PowerDeckType.Minor);
+const uniqueCards = powerCards.filter(card => Object.values(Unique).includes(card.type));
+
+let cardImgPairs = [];
+let runeImgPairs = [];
+
+majorCards.sort(function (a, b) {
     if (a.name < b.name) {
         return -1;
     }
@@ -9,15 +17,90 @@ powerCards.sort(function (a, b) {
         return 1;
     }
     return 0;
-})
+});
 
-const majorCards = powerCards.filter(card => card.type === PowerDeckType.Major);
-const minorCards = powerCards.filter(card => card.type === PowerDeckType.Minor);
-const uniqueCards = powerCards.filter(card => Object.values(Unique).includes(card.type));
+minorCards.sort(function (a, b) {
+    if (a.name < b.name) {
+        return -1;
+    }
+    if (a.name > b.name) {
+        return 1;
+    }
+    return 0;
+});
 
 createList("#majorCards", majorCards);
 createList("#minorCards", minorCards);
 createList("#uniqueCards", uniqueCards);
+addRunes("#runesSection", Elements);
+
+function addRunes(id, runes) {
+    $.each(runes, function (index, value) {
+        const runeContainer = $("<div />").addClass("rune-container");
+        const src = "../../images/symbols/" + value + "_unchecked.jpg";
+        const pathChecked = "../../images/symbols/" + value + "_checked.jpg";
+        const runeImg = $("<img>").addClass("rune-img").attr({
+            src,
+        });
+        $(id).append(runeContainer);
+        runeContainer.append(runeImg);
+        const countBox = $("<div />").addClass("countBox").text("0");
+        runeContainer.append(countBox);
+
+        const runeImgPair = {};
+        runeImgPair.rune = value;
+        runeImgPair.pathUnchecked = src;
+        runeImgPair.pathChecked = pathChecked;
+        runeImgPair.runeContainer = runeContainer;
+
+        runeImgPairs.push(runeImgPair);
+    });
+};
+
+function updateRuneCount() {
+    // eg. [ Elements.Sun] 
+
+    const runes = [];
+    $(".selected-card").each(function() {
+        const src = $(this).find("img").attr("src");
+        const pair = cardImgPairs.find(card => (card.path === src));
+        const powerCard = pair.card;
+
+        for (let i = 0; i < powerCard.elements.length; i++) {
+            const rune = {};
+            rune.name = powerCard.elements[i];
+            const existingRune = runes.find(el => (el.name === rune.name));
+
+            if (existingRune) {               
+                existingRune.count = existingRune.count + 1;
+
+            } else {
+                rune.count = 1;
+                runes.push(rune);
+            }
+        }
+    });
+
+    runeImgPairs.forEach( function(pair) {
+       const runeName = pair.rune;
+       let src;
+       const rune = runes.find( el => (el.name === runeName));
+
+       if (!rune){
+           runeCount = 0;
+           src = pair.pathUnchecked;
+       } else {
+           runeCount = rune.count; 
+           src = pair.pathChecked;
+       }
+
+       pair.runeContainer.find("img").attr("src", src);
+       pair.runeContainer.find("div").text(runeCount);
+    
+    });
+
+};
+
 
 function createList(id, cards) {
     $.each(cards, function (index, value) {
@@ -55,6 +138,12 @@ function addImgs(card) {
     cardContainer.append(img);
 
     cardContainer.on('click', changeCardState);
+
+    const cardImgPair = {};
+    cardImgPair.card = card;
+    cardImgPair.path = src;
+
+    cardImgPairs.push(cardImgPair);
 };
 
 function changeCardState(event) {
@@ -76,18 +165,29 @@ function selectCard(event, cardContainer) {
 
     cardContainer.addClass("selected-card");
 
-
     const removeButton = $("<div />").addClass("remove-card-icon-container");
     removeButton.append($("<i class=\"far fa-times-circle\"></i>"));
 
     cardContainer.append(removeButton);
-
     removeButton.on('click', removeCard);
+
+    // const cardSrc = cardContainer.find("img").attr("src"); 
+    // const cardImgPair = cardImgPairs.find(card => (card.path === cardSrc));
+    //  addRuneCount(cardImgPair.card);
+
+    updateRuneCount();
 }
 
 function removeCard(event) {
     event.stopPropagation();
+
+    const cardSrc = $(this).parent().find("img").attr("src");
+    const cardImgPairIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
+    cardImgPairs.splice(cardImgPairIndex, 1);
+
     $(this).parent().remove();
+    updateRuneCount();
+
 }
 
 function deselectCard(event, cardContainer) {
@@ -95,6 +195,9 @@ function deselectCard(event, cardContainer) {
     event.preventDefault();
     cardContainer.removeClass("selected-card");
     cardContainer.find("div").remove();
+
+    updateRuneCount();
+
 }
 
 function deselectAll(event) {

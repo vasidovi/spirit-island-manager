@@ -16,20 +16,31 @@
 <body>
 
     <div>
+        <div id="runesSection">
+            
+        </div>
         <div id="cardImagesSection">
-        
-        <div id="cardControls">
+            <div id="cardControls">
                 <button type="button" class="btn btn-outline-warning" id="exhaustSelected">Exhaust Selected</button>
                 <button type="button" class="btn btn-outline-success" id="readySelected">Ready Selected</button>
                 <button type="button" class="btn btn-success" id="readyAll">Ready All</button>
                 <button type="button" class="btn btn-secondary" id="deselectAll">Deselect All</button>
-        </div>
-        <div id="cardImages"></div>
+            </div>
+            <div id="cardImages"></div>
         </div>
         <div class=" container row">
-            <ul class="col-sm" id="majorCards"></ul>
-            <ul class="col-sm" id="minorCards"></ul>
-            <ul class="col-sm" id="uniqueCards"></ul>
+            <div class="col-sm">
+                <h5>Major Cards</h5>
+                <ul id="majorCards"></ul>
+            </div>
+            <div class="col-sm">
+                <h5>Minor Cards</h5>
+                <ul id="minorCards"></ul>
+            </div>
+            <div class="col-sm">
+                    <h5>Unique Cards</h5>
+                <ul id="uniqueCards"></ul>
+            </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="scripts/data.js"></script>

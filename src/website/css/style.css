@@ -27,6 +27,20 @@
     border-radius : 10px;
 }
 
+.countBox{
+    display: inline-block;
+    width: 20px;
+}
+
+.rune-container{
+    display: inline-block;
+    margin: 10px 0px;
+}
+.rune-img{
+    width: 25px;
+    margin-right : 4px; 
+}
+
 #cardImagesSection{
     display: grid;
     grid-template-rows: auto, auto;
