@@ -16,9 +16,11 @@
 <body>
 
     <div>
-        <div id="runesSection">
-            
+        <div class="d-flex justify-content-between">
+            <div id="runesSection"></div>
+            <div id="username"></div>
         </div>
+
         <div id="cardImagesSection">
             <div id="cardControls">
                 <button type="button" class="btn btn-outline-warning" id="exhaustSelected">Exhaust Selected</button>
@@ -28,6 +30,7 @@
             </div>
             <div id="cardImages"></div>
         </div>
+
         <div class=" container row">
             <div class="col-sm">
                 <h5>Major Cards</h5>
@@ -38,11 +41,13 @@
                 <ul id="minorCards"></ul>
             </div>
             <div class="col-sm">
-                    <h5>Unique Cards</h5>
+                <h5>Unique Cards</h5>
                 <ul id="uniqueCards"></ul>
             </div>
         </div>
+
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="scripts/login.js"></script>
         <script src="scripts/data.js"></script>
         <script src="scripts/index.js"></script>
 </body>
