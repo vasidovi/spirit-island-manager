@@ -30,7 +30,7 @@ function checkUsername() {
     }
   }
   $("#username").text("Greetings, " + username);
-
+  window.username = username;
 }
 
 checkUsername()
