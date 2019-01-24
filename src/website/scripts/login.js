@@ -33,4 +33,4 @@ function checkUsername() {
   window.username = username;
 }
 
-checkUsername()
+checkUsername();

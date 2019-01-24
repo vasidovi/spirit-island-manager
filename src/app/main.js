@@ -1,13 +1,17 @@
-const express = require('express')
+const express = require('express');
 var bodyParser = require("body-parser");
 const game = require('./game');
 
-const app = express()
-const port = 3000
+// express is npm package - creates server instance;
+const app = express();
+const port = 3000;
 
-app.use(bodyParser.json())
-app.use('/', express.static('src/website'))
-app.use('/images', express.static('images'))
+// parses POST, PUT Request Body to JSON.
+app.use(bodyParser.json());
+// serves static recourses from this path
+app.use('/', express.static('src/website'));
+app.use('/images', express.static('images'));
+// next() allows to make res, req;
 app.use(function (req, res, next) {
   if (!req.headers.authorization) {
     return res.status(403).json({
@@ -35,7 +39,8 @@ app.get('/cards/:type', asyncMiddleware(async (req, res, next) => {
 app.post('/cards/draw/:typeKey/:count', asyncMiddleware(async (req, res, next) => {
   const count = parseInt(req.params.count);
   const cards = await game.draw(req.params.typeKey, count);
-  res.send(JSON.stringify(cards))
+  await game.assignCardsToUser(cards, getUsername(req));
+  res.send(JSON.stringify(cards));
 }))
 
 app.post('/cards/discard', asyncMiddleware(async (req, res, next) => {

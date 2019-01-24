@@ -1,5 +1,5 @@
 const data = require('./data');
-const persistance = require('./persistance');
+const persistence = require('./persistence');
 const _ = require('lodash')
 
 
@@ -41,19 +41,17 @@ const cardData = {
   minor: minorCards,
   unique: uniqueCards
 }
+
 exports.cards = cardData
 
-exports.getCards = async function (type) {
-  return await persistance.getCards.filter(type);
-}
 
-function reshuffleDeck(cards) {
+function returnDiscardedCards(cards) {
   cards
     .filter(c => c.discard)
     .forEach(card => {
       card.deck = true;
       card.discard = false
-    })
+    });
 }
 
 function drawCards(deck, indices) {
@@ -65,7 +63,7 @@ function drawCards(deck, indices) {
 
 exports.discard = async function (cards) {
 
-  const persistedCards = await persistance.getCards();
+  const persistedCards = await persistence.getCards();
   cards.forEach(card => {
 
     const storageCard = persistedCards.find(c => c.id === card.id);
@@ -75,19 +73,19 @@ exports.discard = async function (cards) {
       console.log("Failed to discard card");
       console.log(card);
     }
-  })
+  });
 
-  await persistance.saveCards(persistedCards);
+  await persistence.saveCards(persistedCards);
 }
 
 exports.draw = async function (typeKey, count) {
-  const persistedCards = await persistance.getCards()
+  const persistedCards = await persistence.getCards();
   const allCards = persistedCards.filter(c => c.typeKey === typeKey)
   let deck = allCards.filter(c => c.deck);
 
   // Need to make sure there are enough cards to draw
   if (deck.length < count) {
-    reshuffleDeck(allCards)
+    returnDiscardedCards(allCards)
     deck = allCards.filter(c => c.deck);
 
     if (deck.length < count) {
@@ -99,17 +97,42 @@ exports.draw = async function (typeKey, count) {
 
   const cards = drawCards(deck, randomIndices)
 
-  await persistance.saveCards(persistedCards);
+  await persistence.saveCards(persistedCards);
   return cards.map(e => {
     const cardCopy = _.cloneDeep(powerCards[e.id]);
     cardCopy.id = e.id
-    cardCopy.typeKey = e.typeKey
+    // cardCopy.typeKey = e.typeKey
+    cardCopy.imgSrc = getImgSrc(cardCopy);
     return cardCopy
   });
+};
+
+async function assignCardsToUser(cards, username) {
+  // cards = [];
+  // all saved in persistance cards
+  const persistedCards = await persistence.getCards();
+
+  persistedCards.filter(persistedCard => 
+      cards.some(card => persistedCard.id === card.id))
+      .forEach(function (persistedCard) {
+        persistedCard.user = username;
+      });
+
+  await persistence.saveCards(persistedCards);
 }
+
+exports.assignCardsToUser = assignCardsToUser;
+
+
+function getImgSrc(card) {
+  const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
+  const src = "/images/powers/" + name;
+  return src;
+};
 
 const getTypeKey = t => t.split(' ')[0].toLowerCase()
 
+// cards info is not persisted in persitence
 async function reset() {
   const cards = minorCards.concat(majorCards).map(c => {
     return {
@@ -119,13 +142,14 @@ async function reset() {
       typeKey: getTypeKey(c.type)
     }
   });
-  await persistance.reset({
+  await persistence.reset({
     cards
   });
 }
 
 exports.reset = reset
 
+// setsItems in persistence
 exports.initialize = async function () {
-  persistance.initialize(reset);
+  persistence.initialize(reset);
 }

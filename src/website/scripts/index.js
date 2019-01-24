@@ -129,8 +129,13 @@ function addImgs(card) {
     $("#cardImages").append(cardContainer);
 
     const width = 140;
+    let src;
+    if (card.imgSrc) {
+    src = card.imgSrc;
+    } else {
     const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
-    const src = "../../images/powers/" + name;
+    src = "../../images/powers/" + name;
+    }
     const img = $("<img>").attr({
         src,
         width

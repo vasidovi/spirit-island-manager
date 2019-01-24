@@ -1,9 +1,14 @@
 const webservices = {}
 
 webservices.drawMajorCards = function (callback) {
-  const request = requests.draw('major', 4);
+  const request = requests.draw('major', 1);
   makeRequest(request.method, request.path, callback);
-}
+};
+
+webservices.drawMinorCards = function (callback) {
+  const request = requests.draw('minor', 1);
+  makeRequest(request.method, request.path, callback);
+};
 
 webservices.resetCards = function (callback) {
   const request = requests.reset();
@@ -40,7 +45,7 @@ function makeRequest(method, path, callback) {
       let response = ""
       if (xhttp.response)
         response = JSON.parse(xhttp.response)
-      callback(response)
+      callback(response);
     }
   }
 
