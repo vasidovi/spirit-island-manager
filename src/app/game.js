@@ -73,6 +73,7 @@ exports.discard = async function (cards) {
     const storageCard = persistedCards.find(c => c.id === card.id);
     if (storageCard) {
       storageCard.discard = true;
+      delete storageCard.user;
     } else {
       console.log("Failed to discard card");
       console.log(card);

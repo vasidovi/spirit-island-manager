@@ -10,6 +10,11 @@ webservices.drawMinorCards = function (callback) {
   makeRequest(request.method, request.path, callback);
 };
 
+webservices.discardCards = function (callback, body) {
+  const request = requests.discardCards();
+  makeRequest(request.method, request.path, callback, body);
+};
+
 webservices.resetCards = function (callback) {
   const request = requests.reset();
   makeRequest(request.method, request.path, callback);
@@ -33,6 +38,12 @@ const requests = {
       path: `/reset`,
     }
   },
+  discardCards: () => {
+    return {
+    method: "POST",
+    path: "/cards/discard"
+    }
+  },
   getUserCards: () => {
     return {
       method: "GET",
@@ -45,8 +56,8 @@ function getAuthToken() {
   return "Basic " + btoa(window.username);
 }
 
-function makeRequest(method, path, callback) {
-  var xhttp = new XMLHttpRequest();
+function makeRequest(method, path, callback, body) {
+  var xhttp = new XMLHttpRequest(); 
 
   xhttp.onreadystatechange = function () {
     // only perform callback on last ready state
@@ -63,5 +74,11 @@ function makeRequest(method, path, callback) {
 
   const authToken = getAuthToken();
   xhttp.setRequestHeader("Authorization", authToken);
+
+  if (!body){
   xhttp.send();
+  } else{
+  xhttp.setRequestHeader("Content-Type", "application/json");  
+  xhttp.send(body);  
+  }
 }

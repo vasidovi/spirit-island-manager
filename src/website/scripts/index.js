@@ -61,7 +61,7 @@ function updateRuneCount() {
     // eg. [ Elements.Sun] 
 
     const runes = [];
-    $(".selected-card").each(function() {
+    $(".selected-card").each(function () {
         const src = $(this).find("img").attr("src");
         const pair = cardImgPairs.find(card => (card.path === src));
         const powerCard = pair.card;
@@ -71,7 +71,7 @@ function updateRuneCount() {
             rune.name = powerCard.elements[i];
             const existingRune = runes.find(el => (el.name === rune.name));
 
-            if (existingRune) {               
+            if (existingRune) {
                 existingRune.count = existingRune.count + 1;
 
             } else {
@@ -81,22 +81,22 @@ function updateRuneCount() {
         }
     });
 
-    runeImgPairs.forEach( function(pair) {
-       const runeName = pair.rune;
-       let src;
-       const rune = runes.find( el => (el.name === runeName));
+    runeImgPairs.forEach(function (pair) {
+        const runeName = pair.rune;
+        let src;
+        const rune = runes.find(el => (el.name === runeName));
 
-       if (!rune){
-           runeCount = 0;
-           src = pair.pathUnchecked;
-       } else {
-           runeCount = rune.count; 
-           src = pair.pathChecked;
-       }
+        if (!rune) {
+            runeCount = 0;
+            src = pair.pathUnchecked;
+        } else {
+            runeCount = rune.count;
+            src = pair.pathChecked;
+        }
 
-       pair.runeContainer.find("img").attr("src", src);
-       pair.runeContainer.find("div").text(runeCount);
-    
+        pair.runeContainer.find("img").attr("src", src);
+        pair.runeContainer.find("div").text(runeCount);
+
     });
 
 };
@@ -131,10 +131,10 @@ function addImgs(card) {
     const width = 140;
     let src;
     if (card.imgSrc) {
-    src = card.imgSrc;
+        src = card.imgSrc;
     } else {
-    const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
-    src = "../../images/powers/" + name;
+        const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
+        src = "../../images/powers/" + name;
     }
     const img = $("<img>").attr({
         src,
@@ -185,14 +185,17 @@ function selectCard(event, cardContainer) {
 
 function removeCard(event) {
     event.stopPropagation();
-
     const cardSrc = $(this).parent().find("img").attr("src");
-    const cardImgPairIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
-    cardImgPairs.splice(cardImgPairIndex, 1);
+   
+    const cardIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
+    const card = cardImgPairs[cardIndex].card;
 
-    $(this).parent().remove();
-    updateRuneCount();
+    webservices.discardCards(() => {
+        cardImgPairs.splice(cardIndex, 1);
+        $(this).parent().remove();
+        updateRuneCount();
 
+    }, JSON.stringify([card]));
 }
 
 function deselectCard(event, cardContainer) {
