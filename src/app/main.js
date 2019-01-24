@@ -31,9 +31,14 @@ const asyncMiddleware = fn =>
       .catch(next);
   };
 
-app.get('/cards/:type', asyncMiddleware(async (req, res, next) => {
-  const cards = await game.getCards(req.params.type)
-  res.send(JSON.stringify(cards))
+// app.get('/cards/:type', asyncMiddleware(async (req, res, next) => {
+//   const cards = await game.getCards(req.params.type)
+//   res.send(JSON.stringify(cards))
+// }))
+
+app.get('/cards', asyncMiddleware(async (req, res, next) => {
+  const cards = await game.getUserCards(getUsername(req));
+  res.send(JSON.stringify(cards));
 }))
 
 app.post('/cards/draw/:typeKey/:count', asyncMiddleware(async (req, res, next) => {

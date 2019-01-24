@@ -32,6 +32,10 @@ powerCards.sort(function (a, b) {
   return 0;
 })
 
+
+
+powerCards.forEach(card => card.imgSrc = getImgSrc(card));
+
 const majorCards = powerCards.filter(card => card.type === data.powerDeckType.Major);
 const minorCards = powerCards.filter(card => card.type === data.powerDeckType.Minor);
 const uniqueCards = powerCards.filter(card => Object.values(data.unique).includes(card.type));
@@ -98,14 +102,20 @@ exports.draw = async function (typeKey, count) {
   const cards = drawCards(deck, randomIndices)
 
   await persistence.saveCards(persistedCards);
+  return mapToPowerCards(cards);
+};
+
+function mapToPowerCards (cards){
+   
   return cards.map(e => {
     const cardCopy = _.cloneDeep(powerCards[e.id]);
     cardCopy.id = e.id
     // cardCopy.typeKey = e.typeKey
-    cardCopy.imgSrc = getImgSrc(cardCopy);
-    return cardCopy
+    return cardCopy;
   });
+
 };
+
 
 async function assignCardsToUser(cards, username) {
   // cards = [];
@@ -123,6 +133,18 @@ async function assignCardsToUser(cards, username) {
 
 exports.assignCardsToUser = assignCardsToUser;
 
+
+async function getUserCards(username){
+
+  const persistedCards = await persistence.getCards();
+
+  const persistedUserCards = persistedCards.filter(persistedCard => persistedCard.user === username);
+  
+  return mapToPowerCards(persistedUserCards);
+  
+}
+
+exports.getUserCards = getUserCards;
 
 function getImgSrc(card) {
   const name = card.name.toLowerCase().replace(/ /g, "_").replace(/['\-,]/g, "") + ".jpg";
@@ -147,7 +169,7 @@ async function reset() {
   });
 }
 
-exports.reset = reset
+exports.reset = reset;
 
 // setsItems in persistence
 exports.initialize = async function () {

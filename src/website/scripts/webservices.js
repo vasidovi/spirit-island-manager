@@ -12,9 +12,13 @@ webservices.drawMinorCards = function (callback) {
 
 webservices.resetCards = function (callback) {
   const request = requests.reset();
-
   makeRequest(request.method, request.path, callback);
-}
+};
+
+webservices.getUserCards = function (callback) {
+  const request = requests.getUserCards();
+  makeRequest(request.method, request.path, callback);
+};
 
 const requests = {
   draw: (typeKey, count) => {
@@ -27,6 +31,12 @@ const requests = {
     return {
       method: "POST",
       path: `/reset`,
+    }
+  },
+  getUserCards: () => {
+    return {
+      method: "GET",
+      path: '/cards',
     }
   }
 }

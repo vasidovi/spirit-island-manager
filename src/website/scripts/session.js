@@ -23,3 +23,13 @@ $("#resetDeck").on("click", function (event) {
     alert("Decks have been successfully reset")
   })
 });
+
+
+$(document).ready(function () {
+  console.log("ready");
+  webservices.getUserCards((res) => {
+    for (const value of res) {
+      addImgs(value);
+    };
+  });
+});
