@@ -38,7 +38,10 @@
         <div id="cardImages"></div>
     </div>
 
-    <div class=" container row">
+    <button type="button" class="btn btn-outline-info" data-toggle="collapse" href="#cardsList"
+    role="button" aria-expanded="false" aria-controls="cardsList">Cards lists</button>
+
+    <div class="container row collapse" id="cardsList" >
         <div class="col-sm">
             <h5>Major Cards</h5>
             <ul id="majorCards"></ul>
@@ -77,10 +80,6 @@
                     <div class="collapse" id="collapseExample">
                         <button type="button" class="btn btn-danger float-right" id="resetDeck">Reset Deck</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

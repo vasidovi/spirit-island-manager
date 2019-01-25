@@ -22,13 +22,19 @@ function getRandomInt(min, max) {
 // powerCards.forEach( function(index, value){...});
 const powerCards = data.powerCards.filter(card => card.set === data.productSet.Basegame);
 
+
+
+const uniqueCardTypes = {};
+
+Object.keys(data.unique).forEach(key => {
+  if (powerCards.some(card => card.type === data.unique[key])) {
+    uniqueCardTypes[key] = data.unique[key];
+  };
+});
+
 powerCards.forEach(card => card.imgSrc = getImgSrc(card));
 
-const cardTypeKeys = _.merge(_.invert(data.powerDeckType), (_.invert(data.unique)))
-// const getTypeKey = t =>
-const majorCards = powerCards.filter(card => card.type === data.powerDeckType.Major);
-const minorCards = powerCards.filter(card => card.type === data.powerDeckType.Minor);
-const uniqueCards = powerCards.filter(card => Object.values(data.unique).includes(card.type));
+const cardTypeKeys = _.merge(_.invert(data.powerDeckType), (_.invert(uniqueCardTypes)));
 
 function returnDiscardedCards(cards) {
   cards
@@ -123,7 +129,7 @@ exports.assignCardsToUser = assignCardsToUser;
 
 
 async function getSpirits() {
-  return _.mapValues(data.unique, o => o.split(":")[1].trim())
+  return _.mapValues(uniqueCardTypes, o => o.split(":")[1].trim())
 }
 
 exports.getSpirits = getSpirits;
@@ -144,15 +150,14 @@ function getImgSrc(card) {
 
 // cards info is not persisted in persitence
 async function reset() {
-  const cards = minorCards.concat(majorCards).concat(uniqueCards)
-    .map(c => {
-      return {
-        id: powerCards.indexOf(c),
-        deck: true,
-        discard: false,
-        typeKey: cardTypeKeys[c.type]
-      }
-    });
+  const cards = powerCards.map(c => {
+    return {
+      id: powerCards.indexOf(c),
+      deck: true,
+      discard: false,
+      typeKey: cardTypeKeys[c.type]
+    }
+  });
   await persistence.reset({
     cards
   });
