@@ -20,6 +20,11 @@ webservices.discardCards = function (callback, body) {
   makeRequest(request.method, request.path, callback, body);
 };
 
+webservices.setCardsState = function (callback, state, body) {
+  const request = requests.setCardsState(state);
+  makeRequest(request.method, request.path, callback, body);
+};
+
 webservices.resetCards = function (callback) {
   const request = requests.reset();
   makeRequest(request.method, request.path, callback);
@@ -46,6 +51,12 @@ const requests = {
     return {
       method: "POST",
       path: `/reset`,
+    }
+  },
+  setCardsState: (state) => {
+    return {
+      method : "POST",
+      path: `/cards/state/${state}`
     }
   },
   discardCards: () => {

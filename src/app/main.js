@@ -44,7 +44,12 @@ app.get('/spirits', asyncMiddleware(async (req, res, next) => {
 app.get('/cards', asyncMiddleware(async (req, res, next) => {
   const cards = await game.getUserCards(getUsername(req));
   res.send(JSON.stringify(cards));
-}))
+}));
+
+app.post('/cards/state/:state', asyncMiddleware(async (req, res, next) => {
+  await game.setValue(req.body, "state", req.params.state);
+  res.sendStatus(204);
+}));
 
 app.post('/cards/draw/:typeKey/:count', asyncMiddleware(async (req, res, next) => {
   const count = parseInt(req.params.count);
@@ -54,7 +59,7 @@ app.post('/cards/draw/:typeKey/:count', asyncMiddleware(async (req, res, next) =
 }))
 
 app.post('/cards/discard', asyncMiddleware(async (req, res, next) => {
-  await game.discard(req.body);
+  await game.setValue(req.body, "discard", true);
   res.sendStatus(204)
 }))
 

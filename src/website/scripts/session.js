@@ -16,7 +16,6 @@ $("#drawMinor").on("click", function (event) {
   });
 });
 
-
 $("#resetDeck").on("click", function (event) {
   webservices.resetCards((res) => {
     console.log(res)
@@ -25,7 +24,15 @@ $("#resetDeck").on("click", function (event) {
 });
 
 
-$('#gameSetupModal').on('show.bs.modal', function (e) {
+
+$(document).ready(function () {
+
+  webservices.getUserCards((res) => {
+    for (const value of res) {
+      addImgs(value);
+    };
+  });
+
 
   webservices.getSpirits((res) => {
     const selector = $("#spiritSelect")
@@ -41,13 +48,6 @@ $('#gameSetupModal').on('show.bs.modal', function (e) {
       res.forEach(c => addImgs(c))
     })
   });
-})
 
-$(document).ready(function () {
-  console.log("ready");
-  webservices.getUserCards((res) => {
-    for (const value of res) {
-      addImgs(value);
-    };
-  });
+
 });

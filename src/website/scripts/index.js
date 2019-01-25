@@ -108,7 +108,6 @@ function updateRuneCount() {
 
 };
 
-
 function createList(id, cards) {
     $.each(cards, function (index, value) {
 
@@ -117,18 +116,55 @@ function createList(id, cards) {
                 addImgs(value);
             }));
     });
-    $("#exhaustSelected").on("click", function (event) {
-        $(".img-container").filter(".selected-card").addClass("exhausted-card");
-        deselectAll(event);
-    });
-    $("#readySelected").on("click", function () {
-        $(".img-container").filter(".selected-card").removeClass("exhausted-card");
-    });
-    $("#readyAll").on("click", function () {
-        $(".img-container").removeClass("exhausted-card");
-    });
-    $("#deselectAll").on("click", deselectAll)
 };
+
+$("#exhaustSelected").on("click", function (event) {
+    const exhaustedCards = [];
+    $(".img-container").filter(".selected-card").each(function () {
+        $(this).addClass("exhausted-card");
+        const cardSrc = $(this).find("img").attr("src");
+        const cardIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
+        const card = cardImgPairs[cardIndex].card;
+        exhaustedCards.push(card);
+    });
+
+    webservices.setCardsState(() => {}, "exhaust", JSON.stringify(exhaustedCards));
+
+    deselectAll(event);
+});
+
+$("#readySelected").on("click", function () {
+    const readyCards = [];
+
+    $(".img-container").filter(".selected-card").each(function () {
+        $(this).removeClass("exhausted-card");
+        const cardSrc = $(this).find("img").attr("src");
+        const cardIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
+        const card = cardImgPairs[cardIndex].card;
+        readyCards.push(card);
+    });
+    webservices.setCardsState(() => {}, "ready", JSON.stringify(readyCards));
+
+});
+
+$("#readyAll").on("click", function () {
+
+    const readyCards = [];
+     
+    $(".img-container").each(function () {
+        $(this).removeClass("exhausted-card");
+        const cardSrc = $(this).find("img").attr("src");
+        const cardIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
+        const card = cardImgPairs[cardIndex].card;
+        readyCards.push(card);
+    });
+    
+    webservices.setCardsState(() => {}, "ready", JSON.stringify(readyCards));
+
+});
+
+$("#deselectAll").on("click", deselectAll)
+
 
 function addImgs(card) {
 
@@ -148,6 +184,10 @@ function addImgs(card) {
         width
     });
     cardContainer.append(img);
+
+    if (card.state === "exhaust") {
+        cardContainer.addClass("exhausted-card");
+    };
 
     cardContainer.on('click', changeCardState);
 

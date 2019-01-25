@@ -52,17 +52,18 @@ function drawCards(deck, indices) {
   return deck.filter((_, i) => indices.includes(i))
 }
 
-exports.discard = async function (cards) {
+exports.setValue = async function (cards, key, value) {
 
   const persistedCards = await persistence.getCards();
   cards.forEach(card => {
 
     const storageCard = persistedCards.find(c => c.id === card.id);
     if (storageCard) {
-      storageCard.discard = true;
-      delete storageCard.user;
+      storageCard[key] = value;
+      if (key === "discard" && value === true)
+        delete storageCard.user;
     } else {
-      console.log("Failed to discard card");
+      console.log("Failed to set card value:" + key + " " + value);
       console.log(card);
     }
   });
@@ -104,6 +105,7 @@ function mapToPowerCards(cards) {
   return cards.map(e => {
     const cardCopy = _.cloneDeep(powerCards[e.id]);
     cardCopy.id = e.id
+    cardCopy.state = e.state;
     // cardCopy.typeKey = e.typeKey
     return cardCopy;
   });
