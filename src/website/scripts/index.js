@@ -85,16 +85,23 @@ function updateRuneCount() {
         const runeName = pair.rune;
         let src;
         const rune = runes.find(el => (el.name === runeName));
+        let isChecked = rune ? true : false;
 
-        if (!rune) {
-            runeCount = 0;
-            src = pair.pathUnchecked;
-        } else {
+        const img = pair.runeContainer.find("img");
+
+        if (isChecked) {
             runeCount = rune.count;
             src = pair.pathChecked;
+
+            img.addClass("active")
+        } else {
+            runeCount = 0;
+            src = pair.pathUnchecked;
+
+            img.removeClass("active")
         }
 
-        pair.runeContainer.find("img").attr("src", src);
+        img.attr("src", src);
         pair.runeContainer.find("div").text(runeCount);
 
     });

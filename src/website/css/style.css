@@ -1,47 +1,56 @@
-.remove-card-icon-container{
+.remove-card-icon-container {
     color: white;
-    font-size : 20px;
-    width : 20px; 
-    height:20px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
     position: absolute;
-    border-radius : 5px;
-     top: 5%;
-     left: 75%;  
+    border-radius: 5px;
+    top: 5%;
+    left: 75%;
 }
 
-.img-container{
+.img-container {
     position: relative;
-    display : inline-block;
+    display: inline-block;
 }
 
-.exhausted-card{
+.exhausted-card {
     background-color: black;
 }
 
-.exhausted-card > img{
+.exhausted-card>img {
     opacity: 0.4;
 }
 
-.selected-card > img{
+.selected-card>img {
     border: 4px solid limegreen;
-    border-radius : 10px;
+    border-radius: 10px;
 }
 
-.countBox{
+.countBox {
     display: inline-block;
     width: 20px;
 }
 
-.rune-container{
+.rune-container {
     display: inline-block;
     margin: 10px 0px;
 }
-.rune-img{
+
+.rune-img {
     width: 25px;
-    margin-right : 4px; 
+    margin-right: 4px;
 }
 
-#cardImagesSection{
+:not(.active).rune-img {
+    -webkit-filter: grayscale(100%);
+    /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+    opacity: 0.2;
+}
+
+
+#cardImagesSection {
     display: grid;
     grid-template-rows: auto, auto;
     grid-gap: 10px;
