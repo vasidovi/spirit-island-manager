@@ -22,32 +22,13 @@ function getRandomInt(min, max) {
 // powerCards.forEach( function(index, value){...});
 const powerCards = data.powerCards.filter(card => card.set === data.productSet.Basegame);
 
-powerCards.sort(function (a, b) {
-  if (a.name < b.name) {
-    return -1;
-  }
-  if (a.name > b.name) {
-    return 1;
-  }
-  return 0;
-})
-
-
-
 powerCards.forEach(card => card.imgSrc = getImgSrc(card));
 
+const cardTypeKeys = _.merge(_.invert(data.powerDeckType), (_.invert(data.unique)))
+// const getTypeKey = t =>
 const majorCards = powerCards.filter(card => card.type === data.powerDeckType.Major);
 const minorCards = powerCards.filter(card => card.type === data.powerDeckType.Minor);
 const uniqueCards = powerCards.filter(card => Object.values(data.unique).includes(card.type));
-
-const cardData = {
-  major: majorCards,
-  minor: minorCards,
-  unique: uniqueCards
-}
-
-exports.cards = cardData
-
 
 function returnDiscardedCards(cards) {
   cards
@@ -88,8 +69,14 @@ exports.draw = async function (typeKey, count) {
   const allCards = persistedCards.filter(c => c.typeKey === typeKey)
   let deck = allCards.filter(c => c.deck);
 
-  // Need to make sure there are enough cards to draw
-  if (deck.length < count) {
+  // Need to draw all cards
+  if (count === -1) {
+    returnDiscardedCards(allCards)
+    deck = allCards.filter(c => c.deck);
+    count = deck.length
+  } else if (deck.length < count) {
+    // Need to make sure there are enough cards to draw
+
     returnDiscardedCards(allCards)
     deck = allCards.filter(c => c.deck);
 
@@ -106,8 +93,8 @@ exports.draw = async function (typeKey, count) {
   return mapToPowerCards(cards);
 };
 
-function mapToPowerCards (cards){
-   
+function mapToPowerCards(cards) {
+
   return cards.map(e => {
     const cardCopy = _.cloneDeep(powerCards[e.id]);
     cardCopy.id = e.id
@@ -123,11 +110,11 @@ async function assignCardsToUser(cards, username) {
   // all saved in persistance cards
   const persistedCards = await persistence.getCards();
 
-  persistedCards.filter(persistedCard => 
+  persistedCards.filter(persistedCard =>
       cards.some(card => persistedCard.id === card.id))
-      .forEach(function (persistedCard) {
-        persistedCard.user = username;
-      });
+    .forEach(function (persistedCard) {
+      persistedCard.user = username;
+    });
 
   await persistence.saveCards(persistedCards);
 }
@@ -135,14 +122,16 @@ async function assignCardsToUser(cards, username) {
 exports.assignCardsToUser = assignCardsToUser;
 
 
-async function getUserCards(username){
+async function getSpirits() {
+  return _.mapValues(data.unique, o => o.split(":")[1].trim())
+}
 
+exports.getSpirits = getSpirits;
+
+async function getUserCards(username) {
   const persistedCards = await persistence.getCards();
-
   const persistedUserCards = persistedCards.filter(persistedCard => persistedCard.user === username);
-  
   return mapToPowerCards(persistedUserCards);
-  
 }
 
 exports.getUserCards = getUserCards;
@@ -153,18 +142,17 @@ function getImgSrc(card) {
   return src;
 };
 
-const getTypeKey = t => t.split(' ')[0].toLowerCase()
-
 // cards info is not persisted in persitence
 async function reset() {
-  const cards = minorCards.concat(majorCards).map(c => {
-    return {
-      id: powerCards.indexOf(c),
-      deck: true,
-      discard: false,
-      typeKey: getTypeKey(c.type)
-    }
-  });
+  const cards = minorCards.concat(majorCards).concat(uniqueCards)
+    .map(c => {
+      return {
+        id: powerCards.indexOf(c),
+        deck: true,
+        discard: false,
+        typeKey: cardTypeKeys[c.type]
+      }
+    });
   await persistence.reset({
     cards
   });

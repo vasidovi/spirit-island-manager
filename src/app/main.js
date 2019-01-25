@@ -31,6 +31,11 @@ const asyncMiddleware = fn =>
       .catch(next);
   };
 
+app.get('/spirits', asyncMiddleware(async (req, res, next) => {
+  const spirtis = await game.getSpirits()
+  res.send(JSON.stringify(spirtis))
+}))
+
 // app.get('/cards/:type', asyncMiddleware(async (req, res, next) => {
 //   const cards = await game.getCards(req.params.type)
 //   res.send(JSON.stringify(cards))

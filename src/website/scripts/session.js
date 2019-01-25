@@ -25,6 +25,24 @@ $("#resetDeck").on("click", function (event) {
 });
 
 
+$('#gameSetupModal').on('show.bs.modal', function (e) {
+
+  webservices.getSpirits((res) => {
+    const selector = $("#spiritSelect")
+    selector.empty();
+    Object.keys(res).forEach(key => {
+      const option = $("<option />").attr("value", key).text(res[key])
+      selector.append(option)
+    })
+  })
+  $("#loadSpirit").on("click", function (event) {
+    const spirit = $('#spiritSelect').find(":selected").attr("value")
+    webservices.drawUniqueCards(spirit, (res) => {
+      res.forEach(c => addImgs(c))
+    })
+  });
+})
+
 $(document).ready(function () {
   console.log("ready");
   webservices.getUserCards((res) => {
@@ -33,4 +51,3 @@ $(document).ready(function () {
     };
   });
 });
-

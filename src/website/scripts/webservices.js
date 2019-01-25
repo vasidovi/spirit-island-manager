@@ -1,12 +1,17 @@
 const webservices = {}
 
 webservices.drawMajorCards = function (callback) {
-  const request = requests.draw('major', 1);
+  const request = requests.draw('Major', 1);
   makeRequest(request.method, request.path, callback);
 };
 
 webservices.drawMinorCards = function (callback) {
-  const request = requests.draw('minor', 1);
+  const request = requests.draw('Minor', 1);
+  makeRequest(request.method, request.path, callback);
+};
+
+webservices.drawUniqueCards = function (spirit, callback) {
+  const request = requests.draw(spirit, -1);
   makeRequest(request.method, request.path, callback);
 };
 
@@ -25,6 +30,11 @@ webservices.getUserCards = function (callback) {
   makeRequest(request.method, request.path, callback);
 };
 
+webservices.getSpirits = function (callback) {
+  const request = requests.getSpirits();
+  makeRequest(request.method, request.path, callback);
+};
+
 const requests = {
   draw: (typeKey, count) => {
     return {
@@ -40,14 +50,20 @@ const requests = {
   },
   discardCards: () => {
     return {
-    method: "POST",
-    path: "/cards/discard"
+      method: "POST",
+      path: "/cards/discard"
     }
   },
   getUserCards: () => {
     return {
       method: "GET",
       path: '/cards',
+    }
+  },
+  getSpirits: () => {
+    return {
+      method: "GET",
+      path: '/spirits',
     }
   }
 }
@@ -57,7 +73,7 @@ function getAuthToken() {
 }
 
 function makeRequest(method, path, callback, body) {
-  var xhttp = new XMLHttpRequest(); 
+  var xhttp = new XMLHttpRequest();
 
   xhttp.onreadystatechange = function () {
     // only perform callback on last ready state
@@ -75,10 +91,10 @@ function makeRequest(method, path, callback, body) {
   const authToken = getAuthToken();
   xhttp.setRequestHeader("Authorization", authToken);
 
-  if (!body){
-  xhttp.send();
-  } else{
-  xhttp.setRequestHeader("Content-Type", "application/json");  
-  xhttp.send(body);  
+  if (!body) {
+    xhttp.send();
+  } else {
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send(body);
   }
 }

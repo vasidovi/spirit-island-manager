@@ -186,7 +186,7 @@ function selectCard(event, cardContainer) {
 function removeCard(event) {
     event.stopPropagation();
     const cardSrc = $(this).parent().find("img").attr("src");
-   
+
     const cardIndex = cardImgPairs.findIndex(card => (card.path === cardSrc));
     const card = cardImgPairs[cardIndex].card;
 

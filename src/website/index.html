@@ -23,7 +23,7 @@
                 <!-- Button trigger modal -->
             </div>
             <div>
-                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#gameSetupModal">
                     Game Setup
                 </button>
             </div>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="gameSetupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -66,14 +66,14 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <select>
+                        <select id="spiritSelect">
                             <option>Dreams and Nightmares</option>
                         </select>
                         <button type="button" class="btn btn-primary float-right" id="loadSpirit">Load Spirit</button>
                     </div>
                     <hr>
                     <button type="button" class="btn btn-outline-danger float-right" data-toggle="collapse" href="#collapseExample"
-                        role="button" aria-expanded="false" aria-controls="collapseExample">Toggle the Danger Zone</button>
+                        role="button" aria-expanded="false" aria-controls="collapseExample">Danger Zone</button>
                     <div class="collapse" id="collapseExample">
                         <button type="button" class="btn btn-danger float-right" id="resetDeck">Reset Deck</button>
                     </div>
@@ -93,18 +93,18 @@
         crossorigin="anonymous"></script>
 
 
-    <!-- FOR TESTING PURPOSES ONLY -->
-    <script>
-        $('#exampleModal').modal('show')
-    </script>
-
-
     <script src="scripts/login.js"></script>
     <script src="scripts/webservices.js"></script>
 
     <script src="scripts/data.js"></script>
     <script src="scripts/session.js"></script>
     <script src="scripts/index.js"></script>
+
+    <!-- FOR TESTING PURPOSES ONLY -->
+    <script>
+        $('#gameSetupModal').modal('show')
+    </script>
+
 </body>
 
 </html>
