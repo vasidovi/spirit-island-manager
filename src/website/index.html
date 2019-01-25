@@ -65,8 +65,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <button type="button" class="btn btn-light" id="chooseSpirit">Choose Spirit</button>
-                    <button type="button" class="btn btn-danger" id="resetDeck">Reset Deck</button>
+                    <div>
+                        <select>
+                            <option>Dreams and Nightmares</option>
+                        </select>
+                        <button type="button" class="btn btn-primary float-right" id="loadSpirit">Load Spirit</button>
+                    </div>
+                    <hr>
+                    <button type="button" class="btn btn-outline-danger float-right" data-toggle="collapse" href="#collapseExample"
+                        role="button" aria-expanded="false" aria-controls="collapseExample">Toggle the Danger Zone</button>
+                    <div class="collapse" id="collapseExample">
+                        <button type="button" class="btn btn-danger float-right" id="resetDeck">Reset Deck</button>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -81,6 +91,13 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
+
+
+    <!-- FOR TESTING PURPOSES ONLY -->
+    <script>
+        $('#exampleModal').modal('show')
+    </script>
+
 
     <script src="scripts/login.js"></script>
     <script src="scripts/webservices.js"></script>
